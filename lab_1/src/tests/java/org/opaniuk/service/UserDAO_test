@@ -1,0 +1,44 @@
+package org.opaniuk.service;
+
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.opaniuk.dao.UserDAO;
+import org.opaniuk.data.User;
+
+public class UserDAO_test {
+
+    @Mock private UserDAO myDao;
+
+    @Rule public MockitoRule rule = MockitoJUnit.rule();
+
+    @Test
+    public void testFindById() {
+        MockitoAnnotations.initMocks(this);
+        UserService myService = new UserService(myDao);
+        myService.findById(1L);
+        Mockito.verify(myDao).findById(1L);
+    }
+
+    @Test
+    public void test() {
+        UserService myService = new UserService(myDao);
+        Mockito.when(myDao.findById(1L)).thenReturn(createTestEntity());
+        User actual = myService.findById(1L);
+        Assert.assertEquals("Mike", actual.getUserName());
+        Assert.assertEquals("1234", actual.getPassword());
+        Mockito.verify(myDao).findById(1L);
+    }
+
+    private User createTestEntity() {
+        User myEntity = new User();
+        myEntity.setUserName("Mike");
+        myEntity.setPassword("1234");
+        return myEntity;
+    }
+}
